@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Jungle Rush - 3D Endless Runner</title>
+  <meta name="description" content="Jungle Rush - An adrenaline-pumping 3D endless runner game set in an ancient jungle temple, powered by Three.js and Vite." />
+  <meta name="theme-color" content="#0d2818" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <!-- WebGL Canvas will be appended here -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- In-Game HUD -->
+    <div id="hud" class="hud-overlay hidden">
+      <div class="hud-top">
+        <div class="hud-stat-box score-box">
+          <span class="hud-label">SCORE</span>
+          <span id="score-display" class="hud-value">0</span>
+        </div>
+
+        <div class="hud-stat-box coins-box">
+          <span class="coin-icon">🪙</span>
+          <span id="coins-display" class="hud-value">0</span>
+        </div>
+
+        <div class="hud-stat-box speed-box">
+          <span class="hud-label">SPEED</span>
+          <span id="speed-display" class="hud-value">1.0x</span>
+        </div>
+
+        <div class="hud-actions">
+          <button id="sound-btn" class="icon-btn" title="Toggle Sound">🔊</button>
+          <button id="pause-btn" class="icon-btn" title="Pause Game">⏸</button>
+        </div>
+      </div>
+
+      <!-- Active Power-up Banner -->
+      <div id="powerup-hud" class="powerup-status hidden">
+        <div class="powerup-icon-box" id="powerup-icon">⚡</div>
+        <div class="powerup-info">
+          <div class="powerup-name" id="powerup-name">SPEED BOOST</div>
+          <div class="powerup-bar-track">
+            <div id="powerup-bar-fill" class="powerup-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Touch Controls Guide & Buttons (visible on touch devices) -->
+      <div id="touch-controls" class="touch-controls">
+        <button id="touch-left" class="touch-btn">◀</button>
+        <div class="touch-center-col">
+          <button id="touch-jump" class="touch-btn">▲ JUMP</button>
+          <button id="touch-slide" class="touch-btn">▼ SLIDE</button>
+        </div>
+        <button id="touch-right" class="touch-btn">▶</button>
+      </div>
+    </div>
+
+    <!-- Start / Title Screen -->
+    <div id="start-screen" class="menu-overlay">
+      <div class="menu-card temple-frame">
+        <div class="temple-crest">🗿</div>
+        <h1 class="game-title">JUNGLE<br><span class="title-gold">RUSH</span></h1>
+        <p class="game-tagline">ANCIENT TEMPLE EXPEDITION</p>
+
+        <div class="high-score-banner">
+          <span class="trophy-icon">🏆</span> BEST SCORE: <span id="start-best-score">0</span>
+        </div>
+
+        <div class="instructions-panel">
+          <div class="controls-grid">
+            <div class="control-item">
+              <span class="key-badge">A / ◀</span>
+              <span class="key-badge">D / ▶</span>
+              <span class="control-desc">Dodge Lanes</span>
+            </div>
+            <div class="control-item">
+              <span class="key-badge">SPACE / ▲</span>
+              <span class="control-desc">Jump Barrier / Gap</span>
+            </div>
+            <div class="control-item">
+              <span class="key-badge">S / ▼</span>
+              <span class="control-desc">Slide Under Beams</span>
+            </div>
+            <div class="control-item">
+              <span class="key-badge">ESC</span>
+              <span class="control-desc">Pause</span>
+            </div>
+          </div>
+          <p class="mobile-tip">📱 On mobile: Swipe or use the on-screen buttons!</p>
+        </div>
+
+        <button id="play-btn" class="btn btn-primary pulse-btn">START EXPEDITION</button>
+      </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="pause-screen" class="menu-overlay hidden">
+      <div class="menu-card temple-frame">
+        <h2 class="menu-title">EXPEDITION PAUSED</h2>
+        <div class="pause-stats">
+          <p>Current Score: <span id="pause-score">0</span></p>
+          <p>Coins Collected: <span id="pause-coins">0</span></p>
+        </div>
+        <div class="menu-buttons">
+          <button id="resume-btn" class="btn btn-primary">RESUME</button>
+          <button id="restart-from-pause-btn" class="btn btn-secondary">RESTART</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="menu-overlay hidden">
+      <div class="menu-card temple-frame game-over-card">
+        <div class="skull-crest">💀</div>
+        <h2 class="game-over-title">EXPEDITION OVER</h2>
+        <div id="new-high-score-badge" class="new-high-badge hidden">✨ NEW HIGH SCORE! ✨</div>
+
+        <div class="results-grid">
+          <div class="result-box">
+            <span class="result-label">FINAL SCORE</span>
+            <span id="final-score" class="result-value">0</span>
+          </div>
+          <div class="result-box">
+            <span class="result-label">COINS COLLECTED</span>
+            <span id="final-coins" class="result-value">0</span>
+          </div>
+          <div class="result-box">
+            <span class="result-label">DISTANCE</span>
+            <span id="final-distance" class="result-value">0m</span>
+          </div>
+          <div class="result-box">
+            <span class="result-label">ALL-TIME BEST</span>
+            <span id="final-best-score" class="result-value">0</span>
+          </div>
+        </div>
+
+        <button id="restart-btn" class="btn btn-primary pulse-btn">RUN AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

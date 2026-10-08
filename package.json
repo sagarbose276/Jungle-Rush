@@ -1,0 +1,39 @@
+{
+  "name": "jungle-rush",
+  "version": "1.0.0",
+  "description": "An adrenaline-pumping 3D endless runner game set in an ancient jungle temple, powered by Three.js and Vite.",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sagarbose276/Jungle-Rush.git"
+  },
+  "keywords": [
+    "game",
+    "threejs",
+    "webgl",
+    "endless-runner",
+    "vite",
+    "javascript",
+    "3d-game",
+    "temple-run",
+    "arcade"
+  ],
+  "author": "Sagar Bose",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sagarbose276/Jungle-Rush/issues"
+  },
+  "homepage": "https://github.com/sagarbose276/Jungle-Rush#readme",
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "vite": "^8.3.2"
+  }
+}
